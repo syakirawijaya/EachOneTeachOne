@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Title of the webpage -->
+    <title>Python Flask Upload and display image</title>
+    <!-- Include Bootstrap CSS for styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />        
+    <!-- Include jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+</head>
+<body>
+<!-- Heading -->
+<p><h1 align="center">Python & Flask, Uploading and Displaying Images </h1></p>
+<div class="container">
+    <div class="row">
+        <!-- Heading for file upload section -->
+        <h2>Select a file to upload</h2>
+        <p>
+            <!-- Display flashed messages (error/success messages) -->
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul>
+                {% for message in messages %}
+                  <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+        </p>
+        <!-- If a filename is available (i.e., an image is uploaded), display it -->
+        {% if filename %}
+            <div>
+                <!-- Display the uploaded image -->
+                <img src="{{ url_for('display_image', filename=filename) }}">
+            </div>
+        {% endif %}
+        <!-- Form for uploading files -->
+        <form method="post" action="/" enctype="multipart/form-data">
+            <dl>
+                <p>
+                    <!-- Input field for selecting a file -->
+                    <input type="file" name="file" class="form-control" autocomplete="off" required>
+                </p>
+            </dl>
+            <p>
+                <!-- Submit button to upload the selected file -->
+                <input type="submit" value="Submit" class="btn btn-info">
+            </p>
+        </form>
+    </div>
+</div>
+</body>
+</html>
