@@ -10,15 +10,16 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'EachOneTeachOne'
 
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
+### Start writing your code here ###
+# Use the @app.route decoratore to define a route handler for the root URL '/'
+# Define 'index()' function
+    # Inside the function, return render_template('index.html') to tells Flask to render the index.html template.
 
 @app.route('/', methods=("POST", "GET")) # This is a decorator that registers a function to be called when the root URL / is accessed. It renders the index.html template.
-def upload_file(): #  When a file is uploaded via a POST request, it saves the file to the specified upload folder, stores the file path in the Flask session, and renders the uploaded_image.html template.
-    if request.method == 'POST':
+def upload_file(): #  When a file is uploaded via a ... request, it saves the file to the specified upload folder, stores the file path in the Flask session, and renders the uploaded_image.html template.
+    
+    if request.method == 'POST/GET': ### Which one is the most appropriate, POST or GET?
+    
         uploaded_img = request.files['uploaded-file']
         img_filename = secure_filename(uploaded_img.filename)
         # Upload file to database (defined uploaded folder in static path)

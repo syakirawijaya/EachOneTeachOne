@@ -1,7 +1,7 @@
 /* CSS for image display */
 .image-container {
-    max-width: 800px; /* Set maximum width for the image container */
-    margin: auto; /* Center the image */
+    max-width: 800px; 
+    margin: auto; 
 }
 
 .user-image {
