@@ -1,70 +1,39 @@
-# Import necessary modules from Flask and Werkzeug
-from flask import Flask, flash, request, redirect, url_for, render_template
-from werkzeug.utils import secure_filename
+from flask import Flask, render_template, request, session
 import os
+from werkzeug.utils import secure_filename
 
-# Create a Flask application instance
-app = Flask(__name__)
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg'}
 
-# Define the upload folder where uploaded files will be stored
-UPLOAD_FOLDER = 'static/uploads/'
-
-# Set the secret key for the application
-app.secret_key = "secret key"
-
-# Configure the upload folder and set maximum content length for file uploads
+# The default folder name for static files should be "static"
+app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB maximum file size
+app.secret_key = 'EachOneTeachOne'
 
-# Ensure the upload folder exists. If not, create it.
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
 
-# Set the allowed file extensions for file uploads
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
-
-# Function to check if the filename has an allowed extension
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-     
-# Define route for the home page
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
-# Define route for uploading images via POST request
-@app.route('/', methods=['POST'])
-def upload_image():
-    # Check if the request contains a file
-    if 'file' not in request.files:
-        flash('No file part')
-        return redirect(request.url)
-    file = request.files['file']
-    # Check if no file was selected
-    if file.filename == '':
-        flash('No image selected for uploading')
-        return redirect(request.url)
-    # Check if the uploaded file has an allowed extension
-    if file and allowed_file(file.filename):
-        # Secure the filename to prevent malicious file uploads
-        filename = secure_filename(file.filename)
-        # Save the uploaded file to the upload folder
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        # Flash a success message
-        flash('Image successfully uploaded and displayed below')
-        # Render the home page template with the uploaded image displayed
-        return render_template('index.html', filename=filename)
-    else:
-        # Flash a message indicating that only certain image types are allowed
-        flash('Allowed image types are - png, jpg, jpeg, gif')
-        return redirect(request.url)
 
-# Define route for displaying the uploaded image
-@app.route('/display/<filename>')
-def display_image(filename):
-    # Redirect to the URL of the uploaded image
-    return redirect(url_for('static', filename='uploads/' + filename), code=301)
+@app.route('/', methods=("POST", "GET")) # This is a decorator that registers a function to be called when the root URL / is accessed. It renders the index.html template.
+def upload_file(): #  When a file is uploaded via a POST request, it saves the file to the specified upload folder, stores the file path in the Flask session, and renders the uploaded_image.html template.
+    if request.method == 'POST':
+        uploaded_img = request.files['uploaded-file']
+        img_filename = secure_filename(uploaded_img.filename)
+        # Upload file to database (defined uploaded folder in static path)
+        uploaded_img.save(os.path.join(app.config['UPLOAD_FOLDER'], img_filename))
+        # Storing uploaded file path in flask session
+        session['uploaded_img_file_path'] = os.path.join(app.config['UPLOAD_FOLDER'], img_filename)
 
-# Run the Flask application if this script is executed directly
-if __name__ == "__main__":
-    app.run()
+        return render_template('uploaded_image.html')
+
+@app.route('/show_image') # retrieves the uploaded image file path from the Flask session and renders the show_image.html template, passing the file path as a variable to display the image.
+def display_image():
+    # Retrieving uploaded file
+    img_file_path = session.get('uploaded_img_file_path', None)
+    # Display image in Flask application web page
+    return render_template('show_image.html', user_image=img_file_path)
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -1,68 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <!-- Title of the webpage -->
-    <title>Python Flask Upload and display image</title>
-    <!-- Include Bootstrap CSS for styling -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />        
-    <!-- Include jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-<!-- Heading -->
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="text-center">Python & Flask 101</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <!-- Heading for file upload section -->
-            <h2 class="text-center">Select an image to upload</h2>
-            <!-- Display flashed messages (error/success messages) -->
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="alert alert-info">
-                        <ul>
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-            {% endwith %}
-            <!-- If a filename is available (i.e., an image is uploaded), display it -->
-            {% if filename %}
-                <div class="text-center">
-                    <!-- Display the uploaded image -->
-                    <img src="{{ url_for('display_image', filename=filename) }}" class="img-fluid">
-                </div>
-                <div class="text-center" style="margin-top: 20px;"> <!-- Add margin-top -->
-                    <form method="post" action="/" enctype="multipart/form-data">
-                        <p>
-                            <!-- Return button to go back to the file upload section -->
-                            <button type="button" class="btn btn-info" onclick="window.location.href='/';">Return</button>
-                        </p>
-                    </form>
-                </div>
-            {% else %}
-                <!-- Form for uploading files -->
-                <form method="post" action="/" enctype="multipart/form-data">
-                    <p>
-                        <!-- Input field for selecting a file -->
-                        <input type="file" name="file" class="form-control" autocomplete="off" required>
-                    </p>
-                    <p>
-                        <!-- Submit button to upload the selected file -->
-                        <input type="submit" value="Submit" class="btn btn-info">
-                    </p>
-                </form>
-            {% endif %}
-        </div>
-    </div>
-</div>
-</body>
+
+  </head>
+  <body>
+    <h1>Upload and Display Images with Flask and Python</h1>
+
+    <form method="POST" enctype="multipart/form-data" action="/">
+        <input type="file" id="myFile" name="uploaded-file" >
+        <input type="submit" value="Upload Image">
+    </form>
+  <br>
+  <p style="color:red;">Choose file to upload and press "Upload Image" button!</p>
+  <form action="/show_data" target="_blank">
+        <input type="submit" value="Show Image" />
+    </form>
+  </body>
 </html>
